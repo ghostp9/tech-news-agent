@@ -6,42 +6,42 @@ from config import BOT_TOKEN, CHAT_ID
 
 def send_message(message):
 
-
     url = (
-
         f"https://api.telegram.org/"
-
         f"bot{BOT_TOKEN}/sendMessage"
-
     )
 
 
-    data = {
+    max_length = 4000
 
 
-        "chat_id": CHAT_ID,
+    parts = [
+        message[i:i + max_length]
+        for i in range(0, len(message), max_length)
+    ]
 
 
-        "text": message,
+    for part in parts:
+
+        data = {
+
+            "chat_id": CHAT_ID,
+
+            "text": part,
+
+            "disable_web_page_preview": True
+
+        }
 
 
-        "parse_mode": "HTML",
+        response = requests.post(
+            url,
+            data=data
+        )
 
 
-        "disable_web_page_preview": True
+        if response.status_code != 200:
 
-    }
-
-
-    response = requests.post(
-
-        url,
-
-        data=data
-
-    )
-
-
-    if response.status_code != 200:
-
-        print(response.text)
+            raise Exception(
+                response.text
+            )
