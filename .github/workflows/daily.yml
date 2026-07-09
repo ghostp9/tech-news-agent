@@ -1,0 +1,63 @@
+name: Daily Tech News Agent
+
+
+on:
+
+  schedule:
+
+    - cron: "0 5 * * *"
+
+  workflow_dispatch:
+
+
+
+jobs:
+
+
+  run-agent:
+
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+
+      - name: Checkout
+
+        uses: actions/checkout@v4
+
+
+
+      - name: Setup Python
+
+        uses: actions/setup-python@v5
+
+        with:
+
+          python-version: "3.12"
+
+
+
+      - name: Install dependencies
+
+        run: |
+
+          pip install -r requirements.txt
+
+
+
+      - name: Run Agent
+
+        env:
+
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+
+
+        run:
+
+          python main.py
